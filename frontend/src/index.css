@@ -1,0 +1,304 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* === 9XBET — CHARCOAL STEALTH THEME === */
+
+    /* Core surfaces */
+    --background: 210 20% 96%;          /* #F2F4F6 — Cool pale grey background */
+    --foreground: 220 20% 10%;          /* #141518 — Near black text */
+
+    --card: 0 0% 100%;                  /* Pure white cards */
+    --card-foreground: 220 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
+
+    /* Brand Primary — Charcoal Stealth (Deep Slate) */
+    --primary: 220 13% 13%;             /* #1C1E22 — Deep charcoal */
+    --primary-foreground: 0 0% 100%;    /* #FFFFFF — Pure white text on charcoal */
+
+    /* Secondary — Soft slate for secondary elements */
+    --secondary: 210 40% 96%;           /* #F1F5F9 */
+    --secondary-foreground: 220 20% 10%;
+
+    --muted: 210 30% 92%;               /* #E8EDF2 — Odds button background */
+    --muted-foreground: 215 16% 47%;    /* #64748B — Slate gray for secondary text */
+
+    --accent: 220 13% 18%;             /* Slightly lighter charcoal for accents */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;           /* #EF4444 — Red Live dot */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 22% 88%;              /* Soft gray border */
+    --input: 214 22% 88%;
+    --ring: 220 13% 30%;               /* Charcoal ring */
+
+    --radius: 0.75rem;
+
+    /* === IPL / CRICKET TOKENS — Charcoal-Silver === */
+    --ipl-gold: 220 13% 20%;
+    --ipl-gold-light: 220 10% 35%;
+    --ipl-gold-dark: 220 15% 10%;
+    --cricket: 220 13% 20%;
+    --cricket-light: 220 10% 35%;
+    --cricket-dark: 220 15% 10%;
+
+    /* === COLOR GAME TOKENS — PRESERVED === */
+    --color-red: 0 75% 55%;
+    --color-red-glow: 0 75% 55%;
+    --color-green: 142 71% 42%;
+    --color-green-glow: 142 71% 42%;
+    --color-violet: 262 83% 58%;
+    --color-violet-glow: 262 83% 58%;
+
+    /* === STATUS TOKENS === */
+    --live: 0 75% 55%;
+    --success: 142 71% 42%;
+    --warning: 38 92% 50%;
+
+    /* === SIDEBAR === */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 20% 10%;
+    --sidebar-primary: 220 13% 13%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 20% 92%;
+    --sidebar-accent-foreground: 220 20% 10%;
+    --sidebar-border: 214 22% 86%;
+    --sidebar-ring: 220 13% 30%;
+
+    /* === PITCH === */
+    --pitch: 220 13% 13%;
+    --surface: 0 0% 100%;
+    --surface-hover: 210 20% 94%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+}
+
+@layer utilities {
+  /* ============================
+     IPL BETTING UTILITIES
+  ============================== */
+
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(220 13% 28%), hsl(220 13% 13%));
+  }
+
+  .text-gradient-cricket {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(220 15% 25%), hsl(220 13% 10%));
+  }
+
+  .bg-gradient-gold {
+    background-image: linear-gradient(135deg, hsl(220 13% 22%), hsl(220 15% 10%));
+  }
+
+  .bg-gradient-cricket {
+    background-image: linear-gradient(135deg, hsl(220 13% 22%), hsl(220 15% 10%));
+  }
+
+  .bg-gradient-pitch {
+    background-image: linear-gradient(135deg, hsl(220 13% 18%), hsl(220 15% 8%));
+  }
+
+  .bg-gradient-surface {
+    background-color: hsl(var(--card));
+  }
+
+  /* Soft card shadows instead of glassmorphism */
+  .glass-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .glass-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .glass-card-gold {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--primary) / 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Glow effects -> Elegant dark shadow glows */
+  .glow-gold {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  }
+
+  .glow-cricket {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  }
+
+  .glow-live {
+    box-shadow: 0 0 12px hsl(var(--live) / 0.3);
+  }
+
+  /* ============================
+     COLOR GAME UTILITIES
+  ============================== */
+
+  .color-btn-red {
+    background: hsl(var(--card));
+    border: 2px solid hsl(var(--border));
+    color: hsl(var(--color-red));
+    transition: all 0.2s ease;
+  }
+
+  .color-btn-red:hover,
+  .color-btn-red.selected {
+    background: hsl(var(--color-red) / 0.05);
+    border-color: hsl(var(--color-red));
+    box-shadow: 0 4px 12px hsl(var(--color-red) / 0.15);
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .color-btn-green {
+    background: hsl(var(--card));
+    border: 2px solid hsl(var(--border));
+    color: hsl(var(--color-green));
+    transition: all 0.2s ease;
+  }
+
+  .color-btn-green:hover,
+  .color-btn-green.selected {
+    background: hsl(var(--color-green) / 0.05);
+    border-color: hsl(var(--color-green));
+    box-shadow: 0 4px 12px hsl(var(--color-green) / 0.15);
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .color-btn-violet {
+    background: hsl(var(--card));
+    border: 2px solid hsl(var(--border));
+    color: hsl(var(--color-violet));
+    transition: all 0.2s ease;
+  }
+
+  .color-btn-violet:hover,
+  .color-btn-violet.selected {
+    background: hsl(var(--color-violet) / 0.05);
+    border-color: hsl(var(--color-violet));
+    box-shadow: 0 4px 12px hsl(var(--color-violet) / 0.15);
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  /* Card hover */
+  .card-hover {
+    @apply transition-all duration-300;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  /* ============================
+     ANIMATIONS
+  ============================== */
+
+  @keyframes pulse-live {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 hsl(var(--live) / 0.3); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 4px hsl(var(--live) / 0); }
+  }
+
+  .animate-pulse-live {
+    animation: pulse-live 1.5s ease-in-out infinite;
+  }
+
+  @keyframes coinSpin {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(720deg); }
+  }
+
+  .animate-coin-spin {
+    animation: coinSpin 1s ease-in-out;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, hsl(var(--muted)), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes float-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-float-up {
+    animation: float-up 0.4s ease-out forwards;
+  }
+
+  .pb-safe {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
+  
+  /* Responsive Desktop Layout */
+  @media (min-width: 1024px) {
+    .container {
+      max-width: 1440px !important;
+    }
+    .pb-safe {
+      padding-bottom: 2rem; /* No bottom bar on desktop */
+    }
+    .desktop-sidebar {
+      height: calc(100vh - 5rem);
+      position: sticky;
+      top: 5rem;
+    }
+  }
+}
