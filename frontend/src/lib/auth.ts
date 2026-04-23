@@ -42,7 +42,7 @@ export async function login(usernameOrEmail: string, password: string) {
 }
 
 export async function register(payload: { username: string; email: string; password: string }) {
-  return apiFetch<UserMe>("/register", {
+  return apiFetch<UserMe>("/api/auth/register", {
     method: "POST",
     body: JSON.stringify(payload),
   });
