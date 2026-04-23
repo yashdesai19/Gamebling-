@@ -148,7 +148,7 @@ export default function ColorGamePage() {
   const { data: round, refetch: refetchRound } = useQuery<ColorRound>({
     queryKey: ["color-current"],
     queryFn: () => apiFetch<ColorRound>("/api/color/current"),
-    refetchInterval: 1500,
+    refetchInterval: 5000,
   });
 
   // Sync local timer with server
@@ -178,14 +178,14 @@ export default function ColorGamePage() {
   const { data: history = [] } = useQuery<HistoryRound[]>({
     queryKey: ["color-history"],
     queryFn: () => apiFetch<HistoryRound[]>("/api/color/history"),
-    refetchInterval: 10000,
+    refetchInterval: 30000,
   });
 
   // ── Fetch my bets ────────────────────────────────────────────────────────
   const { data: myBets = [] } = useQuery<ColorBet[]>({
     queryKey: ["color-my-bets"],
     queryFn: () => apiFetch<ColorBet[]>("/api/color/my-bets"),
-    refetchInterval: 8000,
+    refetchInterval: 20000,
     enabled: userIsAuthed,
   });
 
@@ -251,7 +251,7 @@ export default function ColorGamePage() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <BottomNav />
-      <div className="container max-w-lg mx-auto px-4 pt-10 pb-24 space-y-6">
+      <div className="container max-w-lg mx-auto px-4 pt-20 sm:pt-24 pb-24 space-y-6">
         {/* Page Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-black text-foreground tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>

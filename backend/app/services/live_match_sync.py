@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
 
 from app.models.match import Match
@@ -60,6 +60,74 @@ def _build_live_score_text(scores: list[dict[str, Any]]) -> tuple[str | None, st
     return " | ".join(lines), latest_over
 
 
+def _extract_live_score_payload(raw: dict[str, Any]) -> tuple[str | None, str | None]:
+    score_keys = ("score", "scores", "scoreCard", "scorecard", "liveScore", "live_score")
+    for key in score_keys:
+        value = raw.get(key)
+        if isinstance(value, list):
+            text, over = _build_live_score_text([x for x in value if isinstance(x, dict)])
+            if text or over:
+                return text, over
+        if isinstance(value, dict):
+            items = value.get("innings") or value.get("cards") or value.get("data")
+            if isinstance(items, list):
+                text, over = _build_live_score_text([x for x in items if isinstance(x, dict)])
+                if text or over:
+                    return text, over
+            inning = str(value.get("inning") or value.get("team") or value.get("name") or "").strip()
+            runs = value.get("r") or value.get("runs")
+            wickets = value.get("w") or value.get("wkts") or value.get("wickets")
+            overs = value.get("o") or value.get("overs")
+            if runs is not None or wickets is not None or overs is not None:
+                chunk = f"{runs}/{wickets}"
+                if overs is not None:
+                    chunk += f" ({overs})"
+                if inning:
+                    chunk = f"{inning}: {chunk}"
+                return chunk, str(overs) if overs is not None else None
+    return None, None
+
+
+def _is_live_status(raw_status: str) -> bool:
+    s = (raw_status or "").lower()
+    return any(k in s for k in ["live", "in progress", "innings break", "stumps", "rain delay", "play stopped"])
+
+
+def _parse_datetime_or_none(value: Any) -> datetime | None:
+    if value is None:
+        return None
+    raw = str(value).strip()
+    if not raw:
+        return None
+    try:
+        if raw.isdigit() and len(raw) > 10:
+            return datetime.fromtimestamp(int(raw) / 1000.0, tz=UTC)
+        dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=UTC)
+        return dt
+    except Exception:
+        return None
+
+
+def _extract_toss_time(raw: dict[str, Any], match_time: datetime) -> datetime:
+    candidate_keys = (
+        "tossTime",
+        "toss_time",
+        "tossDateTime",
+        "toss_datetime",
+        "tossDateTimeGMT",
+        "tossStartTime",
+        "tossStartDate",
+    )
+    for key in candidate_keys:
+        parsed = _parse_datetime_or_none(raw.get(key))
+        if parsed:
+            return parsed
+    # Fallback so toss betting still works on feeds that do not expose a dedicated toss timestamp.
+    return match_time - timedelta(minutes=30)
+
+
 def _map_status(raw_status: str) -> str:
     s = (raw_status or "").lower()
     if any(k in s for k in ["live", "in progress", "innings break", "stumps"]):
@@ -104,6 +172,31 @@ class LiveIPLSyncService:
             if name.lower() in lower:
                 return self.db.scalar(select(Team).where(Team.name == name))
         return None
+
+    def _find_existing_match_by_teams_and_time(
+        self,
+        team1_id: int,
+        team2_id: int,
+        match_time: datetime,
+    ) -> Match | None:
+        # CricAPI and schedule providers can use different external ids.
+        # Match by both teams within a broad time window to update the existing fixture.
+        window_start = match_time - timedelta(hours=8)
+        window_end = match_time + timedelta(hours=8)
+        return self.db.scalar(
+            select(Match)
+            .where(
+                and_(
+                    or_(
+                        and_(Match.team1_id == team1_id, Match.team2_id == team2_id),
+                        and_(Match.team1_id == team2_id, Match.team2_id == team1_id),
+                    ),
+                    Match.match_date >= window_start,
+                    Match.match_date <= window_end,
+                )
+            )
+            .order_by(Match.match_date.asc())
+        )
 
     def sync_ipl(self) -> dict[str, int | str]:
         # Priority 1: RapidAPI for full schedule
@@ -166,12 +259,17 @@ class LiveIPLSyncService:
                     match.team1_id = team1.id
                     match.team2_id = team2.id
                     match.match_date = _parse_datetime(str(info.get("startDate") or ""))
+                    match.toss_time = _extract_toss_time(info, match.match_date)
                     match.venue = f"{info.get('venueInfo', {}).get('ground')}, {info.get('venueInfo', {}).get('city')}"
                     
                     # RapidAPI schedule state might be 'preview' or 'live'
-                    state = str(info.get("state") or "").lower()
-                    if state == "live":
+                    state = str(info.get("state") or info.get("status") or "").lower()
+                    live_score, live_over = _extract_live_score_payload(info)
+                    if state == "live" or live_score or _is_live_status(state):
                         match.match_status = "live"
+                        match.live_score = live_score
+                        match.live_over = live_over
+                        match.live_status_text = str(info.get("status") or info.get("state") or "live")
                     elif state in ["preview", "upcoming"]:
                         match.match_status = "scheduled"
                     
@@ -210,33 +308,49 @@ class LiveIPLSyncService:
 
             external_id = str(row.get("id") or "").strip() or None
             if not external_id: continue
-            
+
+            match_time = _parse_datetime(str(row.get("dateTimeGMT") or row.get("date") or ""))
             match = self.db.scalar(select(Match).where(Match.external_match_id == external_id))
+            if not match:
+                match = self._find_existing_match_by_teams_and_time(team1.id, team2.id, match_time)
 
             if not match:
                 match = Match(external_match_id=external_id)
                 match.team1_id = team1.id
                 match.team2_id = team2.id
-                match.match_date = _parse_datetime(str(row.get("dateTimeGMT") or row.get("date") or ""))
+                match.match_date = match_time
                 match.match_status = "scheduled"
+            else:
+                # Backfill ext id once resolved so future updates are direct lookups.
+                if external_id and not match.external_match_id:
+                    match.external_match_id = external_id
+                previous_gap = abs((match.match_date - match_time).total_seconds())
+                if previous_gap > 120:
+                    match.match_date = match_time
+                match.team1_id = team1.id
+                match.team2_id = team2.id
 
             raw_status = str(row.get("status") or "")
-            live_score, live_over = _build_live_score_text(row.get("score") if isinstance(row.get("score"), list) else [])
+            live_score, live_over = _extract_live_score_payload(row)
             toss_team = self._find_team_by_name(team_names, str(row.get("tossWinner") or row.get("toss_winner") or ""))
             winner_team = self._find_team_by_name(team_names, str(row.get("matchWinner") or row.get("winner") or ""))
+            was_completed = match.match_status == "completed"
 
             match.venue = str(row.get("venue") or match.venue or "TBD")
-            match.match_status = _map_status(raw_status)
+            match.toss_time = _extract_toss_time(row, match.match_date)
+            mapped_status = _map_status(raw_status)
+            # Some feeds keep status as "scheduled/open" even while score is flowing.
+            if (live_score or _is_live_status(raw_status)) and mapped_status in {"scheduled", "open"}:
+                mapped_status = "live"
+            match.match_status = mapped_status
             match.live_score = live_score
             match.live_over = live_over
-            match.live_status_text = raw_status or None
+            match.live_status_text = raw_status or ("live" if live_score else None)
             match.last_synced_at = datetime.now(UTC)
             if toss_team:
                 match.toss_winner_team_id = toss_team.id
             if winner_team:
                 match.match_winner_team_id = winner_team.id
-
-            was_completed = match.id and match.match_status == "completed"
 
             self.db.add(match)
             self.db.flush() 

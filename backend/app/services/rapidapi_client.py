@@ -11,9 +11,10 @@ class RapidAPIClient:
     """Client for the 'Cricket API Free Data' on RapidAPI."""
 
     def __init__(self) -> None:
-        self.api_key = os.getenv("X-RapidAPI-Key", "").strip()
-        self.api_host = os.getenv("X-RapidAPI-Host", "cricket-api-free-data.p.rapidapi.com").strip()
+        self.api_key = (settings.rapidapi_key or os.getenv("X-RapidAPI-Key", "")).strip()
+        self.api_host = (settings.rapidapi_host or os.getenv("X-RapidAPI-Host", "cricket-api-free-data.p.rapidapi.com")).strip()
         self.base_url = f"https://{self.api_host}"
+        self.timeout = max(5, int(settings.rapidapi_timeout_seconds))
 
     def enabled(self) -> bool:
         return bool(self.api_key)
@@ -30,7 +31,7 @@ class RapidAPIClient:
         }
         
         try:
-            with httpx.Client(timeout=20) as client:
+            with httpx.Client(timeout=self.timeout, trust_env=False) as client:
                 res = client.get(url, headers=headers)
                 res.raise_for_status()
                 return res.json()

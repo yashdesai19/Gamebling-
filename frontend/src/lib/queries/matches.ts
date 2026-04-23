@@ -6,7 +6,13 @@ export function useMatches() {
   return useQuery({
     queryKey: ["matches"],
     queryFn: () => apiFetch<Match[]>("/api/matches/"),
-    refetchInterval: 4000, // Poll every 4 seconds for maximum responsiveness
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchInterval: (query) => {
+      const matches = query.state.data ?? [];
+      const hasLiveMatch = matches.some((match) => match.match_status === "live" || Boolean(match.live_score?.trim()));
+      return hasLiveMatch ? 3000 : 10000;
+    },
   });
 }
 

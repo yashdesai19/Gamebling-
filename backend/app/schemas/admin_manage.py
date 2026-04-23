@@ -9,6 +9,7 @@ class AdminMatchCreate(BaseModel):
     team1_id: int
     team2_id: int
     match_date: datetime
+    toss_time: datetime | None = None
     venue: str = Field(min_length=2, max_length=255)
     match_status: str = Field(default="open")
 
@@ -17,6 +18,7 @@ class AdminMatchUpdate(BaseModel):
     team1_id: int | None = None
     team2_id: int | None = None
     match_date: datetime | None = None
+    toss_time: datetime | None = None
     venue: str | None = Field(default=None, min_length=2, max_length=255)
     match_status: str | None = None
     toss_winner_team_id: int | None = None

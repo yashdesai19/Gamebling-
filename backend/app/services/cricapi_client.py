@@ -23,7 +23,7 @@ class CricAPIClient:
 
         url = f"{self.base_url}/currentMatches"
         params = {"apikey": self.api_key, "offset": 0}
-        with httpx.Client(timeout=self.timeout) as client:
+        with httpx.Client(timeout=self.timeout, trust_env=False) as client:
             res = client.get(url, params=params)
             res.raise_for_status()
             body = res.json()
@@ -40,7 +40,7 @@ class CricAPIClient:
 
         url = f"{self.base_url}/match_info"
         params = {"apikey": self.api_key, "id": match_id}
-        with httpx.Client(timeout=self.timeout) as client:
+        with httpx.Client(timeout=self.timeout, trust_env=False) as client:
             res = client.get(url, params=params)
             if res.status_code != 200:
                 return None

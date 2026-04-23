@@ -33,10 +33,10 @@ def advance_color_game():
 
 
 def start_scheduler():
-    # Schedule CricAPI sync every 30 minutes to stay within limits
+    # Schedule match sync every 15 seconds for near real-time score updates
     scheduler.add_job(
         sync_live_matches,
-        trigger=IntervalTrigger(minutes=30),
+        trigger=IntervalTrigger(seconds=15),
         id="sync_live_matches_job",
         replace_existing=True,
     )
@@ -44,7 +44,7 @@ def start_scheduler():
     # Schedule Color Game advancement every 1 second
     scheduler.add_job(
         advance_color_game,
-        trigger=IntervalTrigger(seconds=1),
+        trigger=IntervalTrigger(seconds=3),
         id="advance_color_game_job",
         replace_existing=True,
     )

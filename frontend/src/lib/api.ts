@@ -1,8 +1,5 @@
 const configuredApiBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
-const inferredApiBase =
-  typeof window !== "undefined"
-    ? `${window.location.protocol}//${window.location.hostname}:8001`
-    : "http://127.0.0.1:8001";
+const inferredApiBase = typeof window === "undefined" ? "http://127.0.0.1:8001" : "";
 
 export const API_BASE_URL = (configuredApiBase || inferredApiBase).replace(/\/+$/, "");
 
@@ -41,7 +38,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   try {
     res = await fetch(url, { ...init, headers });
   } catch (error) {
-    throw new ApiError(`Network error: cannot reach API at ${API_BASE_URL}`, 0, {
+    throw new ApiError(`Network error: cannot reach API at ${API_BASE_URL || "current origin (/api proxy)"}`, 0, {
       error: String(error),
     });
   }

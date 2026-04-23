@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Trophy, User, Bell, LogOut, Lock, Pencil, Plus } from "lucide-react";
@@ -15,6 +15,17 @@ import {
 
 type WalletResponse = { wallet_balance: string };
 type UserMe = { id: number; username: string; email: string };
+
+const moneyFormatter = new Intl.NumberFormat("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+function formatMoney(value: number | string) {
+  const amount = typeof value === "string" ? Number(value) : value;
+  if (!Number.isFinite(amount)) return "0.00";
+  return moneyFormatter.format(amount);
+}
 
 const navItems = [
   { to: "/", icon: Home, label: "Home" },
@@ -67,16 +78,14 @@ const BottomNav = () => {
                 <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#00c569] flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
                   <Plus className="w-4 h-4 sm:w-5 sm:h-5 stroke-[3]" />
                 </div>
-                <span className="text-[10px] sm:text-sm font-black text-foreground whitespace-nowrap">
-                  {walletData?.wallet_balance ?? "0"} ₹
-                </span>
+                <span className="text-[10px] sm:text-sm font-black text-foreground whitespace-nowrap">₹{formatMoney(walletData?.wallet_balance ?? "0")}</span>
               </Link>
             ) : (
               <Link to="/login" className="flex items-center gap-1.5 sm:gap-2 bg-[#f1f5f9] rounded-full py-1 pl-1 pr-2 sm:pr-3 opacity-80 cursor-pointer">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#00c569] flex items-center justify-center text-white">
                   <Plus className="w-4 h-4 sm:w-5 sm:h-5 stroke-[3]" />
                 </div>
-                <span className="text-[10px] sm:text-sm font-black text-foreground">0 ₹</span>
+                <span className="text-[10px] sm:text-sm font-black text-foreground">₹0.00</span>
               </Link>
             )}
           </div>
@@ -187,4 +196,5 @@ const BottomNav = () => {
 };
 
 export default BottomNav;
+
 

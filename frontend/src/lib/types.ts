@@ -8,6 +8,7 @@ export type Team = {
 export type Match = {
   id: number;
   match_date: string;
+  toss_time: string | null;
   venue: string;
   match_status: string;
   external_match_id: string | null;
