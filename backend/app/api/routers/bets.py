@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from decimal import Decimal
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
@@ -19,6 +20,18 @@ from app.services.wallet import WalletService
 
 
 router = APIRouter(prefix="/bets", tags=["bets"])
+
+TOSS_CLOSE_BUFFER = timedelta(minutes=5)
+DEFAULT_TOSS_LEAD = timedelta(minutes=30)
+
+
+def _effective_toss_time(match: Match) -> datetime:
+    return match.toss_time or (match.match_date - DEFAULT_TOSS_LEAD)
+
+
+def _is_toss_betting_closed(match: Match, *, now: datetime | None = None) -> bool:
+    current = now or datetime.now(UTC)
+    return current >= (_effective_toss_time(match) - TOSS_CLOSE_BUFFER)
 
 
 def _place_bet(
@@ -78,6 +91,8 @@ def place_toss(
         raise HTTPException(status_code=404, detail="Match not found")
     if match.match_status == MatchStatus.live.value:
         raise HTTPException(status_code=400, detail="Toss betting is closed for live matches")
+    if _is_toss_betting_closed(match):
+        raise HTTPException(status_code=400, detail="Toss betting closes 5 minutes before toss time")
     
     return _place_bet(db=db, current_user=current_user, payload=payload, bet_type=BetType.toss)
 

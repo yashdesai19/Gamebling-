@@ -33,6 +33,11 @@ class Settings(BaseSettings):
     cricapi_api_key: str | None = Field(default=None, validation_alias="CRICKET_API_KEY")
     cricapi_timeout_seconds: int = Field(default=15, validation_alias="CRICAPI_TIMEOUT_SECONDS")
 
+    # RapidAPI (schedule/live fallback)
+    rapidapi_key: str | None = Field(default=None, validation_alias="X-RapidAPI-Key")
+    rapidapi_host: str = Field(default="cricket-api-free-data.p.rapidapi.com", validation_alias="X-RapidAPI-Host")
+    rapidapi_timeout_seconds: int = Field(default=20, validation_alias="RAPIDAPI_TIMEOUT_SECONDS")
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def _normalize_cors_origins(cls, v):

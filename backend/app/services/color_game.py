@@ -100,7 +100,15 @@ class ColorGameService:
         self.db = db
 
     def _latest_round_for_update(self) -> ColorRound | None:
-        return self.db.scalar(select(ColorRound).order_by(ColorRound.round_number.desc()).with_for_update())
+        # Lock only the newest round row; locking the whole result set can deadlock
+        # under concurrent scheduler/API requests.
+        stmt = (
+            select(ColorRound)
+            .order_by(ColorRound.round_number.desc())
+            .limit(1)
+            .with_for_update()
+        )
+        return self.db.scalar(stmt)
 
     def _ensure_first_round(self, now: datetime) -> ColorRound:
         if self.db.scalar(select(ColorRound.id).limit(1)) is not None:

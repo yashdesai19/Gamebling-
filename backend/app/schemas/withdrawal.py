@@ -8,6 +8,10 @@ from pydantic import BaseModel, Field
 
 class WithdrawalRequest(BaseModel):
     amount: Decimal = Field(gt=0, max_digits=12, decimal_places=2)
+    bank_name: str | None = Field(default=None, max_length=120)
+    account_holder_name: str | None = Field(default=None, max_length=120)
+    account_number: str | None = Field(default=None, max_length=40)
+    ifsc_code: str | None = Field(default=None, max_length=20)
     bank_details: str | None = Field(default=None, max_length=500)
     upi_id: str | None = Field(default=None, max_length=100)
 

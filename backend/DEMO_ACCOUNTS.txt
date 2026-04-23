@@ -1,0 +1,10 @@
+Demo Account Credentials
+========================
+
+Username: yash
+Email: yash.demo@mail.com
+Password: Yash@2026
+
+Notes:
+- Account is marked verified for demo use.
+- Updated on: 2026-04-21

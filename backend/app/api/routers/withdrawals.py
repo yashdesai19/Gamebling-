@@ -22,6 +22,29 @@ from app.services.wallet import WalletService
 router = APIRouter(tags=["withdrawals"])
 
 
+def _compose_bank_details(payload: WithdrawalRequest, current_user: User) -> tuple[str | None, str | None]:
+    upi_id = (payload.upi_id or current_user.upi_id or "").strip() or None
+
+    if payload.bank_details:
+        bank_details = payload.bank_details.strip() or None
+    else:
+        parts: list[str] = []
+        if payload.bank_name:
+            parts.append(f"Bank Name: {payload.bank_name.strip()}")
+        if payload.account_holder_name:
+            parts.append(f"Account Holder: {payload.account_holder_name.strip()}")
+        if payload.account_number:
+            parts.append(f"Account Number: {payload.account_number.strip()}")
+        if payload.ifsc_code:
+            parts.append(f"IFSC Code: {payload.ifsc_code.strip()}")
+
+        bank_details = " | ".join(parts) if parts else None
+        if not bank_details:
+            bank_details = (current_user.bank_details or "").strip() or None
+
+    return bank_details, upi_id
+
+
 @router.post("/payments/withdraw_request", response_model=WithdrawalPublic)
 def withdraw_request(
     payload: WithdrawalRequest,
@@ -31,8 +54,7 @@ def withdraw_request(
     if current_user.kyc_status != KycStatus.verified.value:
         raise HTTPException(status_code=400, detail="KYC required for withdrawals")
 
-    bank_details = payload.bank_details or current_user.bank_details
-    upi_id = payload.upi_id or current_user.upi_id
+    bank_details, upi_id = _compose_bank_details(payload, current_user)
     if not bank_details and not upi_id:
         raise HTTPException(status_code=400, detail="Bank details or UPI ID required")
 

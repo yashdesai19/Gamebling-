@@ -10,6 +10,7 @@ from app.schemas.team import TeamPublic
 class MatchPublic(BaseModel):
     id: int
     match_date: datetime
+    toss_time: datetime | None = None
     venue: str
     match_status: str
     external_match_id: str | None = None

@@ -19,6 +19,7 @@ class Match(TimestampMixin, Base):
     team2_id: Mapped[int] = mapped_column(ForeignKey("teams.id", ondelete="RESTRICT"), nullable=False, index=True)
 
     match_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    toss_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
     venue: Mapped[str] = mapped_column(String(255), nullable=False)
 
     toss_winner_team_id: Mapped[int | None] = mapped_column(

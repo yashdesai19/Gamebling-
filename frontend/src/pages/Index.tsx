@@ -211,9 +211,9 @@ const Index = () => {
 
       <footer className="container mx-auto px-4 mt-16 pt-8 border-t border-border/50 text-center">
          <div className="flex flex-col items-center justify-center gap-2">
-            <Logo size="sm" className="opacity-50 grayscale hover:grayscale-0 transition-all" />
+            <Logo size="sm" className="transition-all" />
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em]">
-               Â© 2024 PLATFORM â€¢ PLAY RESPONSIBLY
+               © 2026 PLATFORM • PLAY RESPONSIBLY
             </p>
          </div>
       </footer>
@@ -222,3 +222,5 @@ const Index = () => {
 };
 
 export default Index;
+
+
