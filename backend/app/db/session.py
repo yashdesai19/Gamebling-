@@ -8,8 +8,16 @@ from sqlalchemy.orm import Session, sessionmaker
 from app.core.config import settings
 
 
+def _get_db_url() -> str:
+    url = settings.database_url
+    # Render gives postgres:// or postgresql:// — convert to psycopg3 dialect
+    url = url.replace("postgresql+psycopg2://", "postgresql+psycopg://")
+    url = url.replace("postgresql://", "postgresql+psycopg://")
+    url = url.replace("postgres://", "postgresql+psycopg://")
+    return url
+
 engine = create_engine(
-    settings.database_url,
+    _get_db_url(),
     pool_pre_ping=True,
 )
 

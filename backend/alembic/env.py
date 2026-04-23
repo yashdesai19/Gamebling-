@@ -19,7 +19,12 @@ target_metadata = Base.metadata
 
 
 def get_url() -> str:
-    return settings.database_url
+    url = settings.database_url
+    # Render gives postgres:// or postgresql:// — convert to psycopg3 dialect
+    url = url.replace("postgresql+psycopg2://", "postgresql+psycopg://")
+    url = url.replace("postgresql://", "postgresql+psycopg://")
+    url = url.replace("postgres://", "postgresql+psycopg://")
+    return url
 
 
 def run_migrations_offline() -> None:
