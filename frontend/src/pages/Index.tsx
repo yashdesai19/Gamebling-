@@ -17,9 +17,9 @@ const sports = [
 ];
 
 const trendingBets = [
-  { user: "User_829", amount: "₹12,400", time: "2m ago", game: "MI vs CSK" },
-  { user: "Karan_X", amount: "₹5,000", time: "5m ago", game: "Color Game" },
-  { user: "BetMaster", amount: "₹25,000", time: "8m ago", game: "RCB vs GT" },
+  { user: "User_829", amount: "â¹12,400", time: "2m ago", game: "MI vs CSK" },
+  { user: "Karan_X", amount: "â¹5,000", time: "5m ago", game: "Color Game" },
+  { user: "BetMaster", amount: "â¹25,000", time: "8m ago", game: "RCB vs GT" },
 ];
 
 const Index = () => {
@@ -87,8 +87,10 @@ const Index = () => {
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32" />
               <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary/10 rounded-full blur-2xl transform -translate-x-1/2 -translate-y-1/2" />
-              <div className="absolute bottom-4 right-12 opacity-10 transform rotate-12">
-                   <Trophy className="w-56 h-56 text-primary" />
+              <div className="absolute bottom-[-20%] right-[-5%] opacity-20 transform rotate-12 select-none animate-float hidden sm:block">
+                   <div className="w-80 h-80 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white font-black text-[12rem] shadow-2xl border-8 border-white/20" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    9X
+                   </div>
               </div>
             </div>
 
@@ -110,7 +112,7 @@ const Index = () => {
                         <Palette className="w-6 h-6 text-purple-600" />
                     </div>
                     <h3 className="text-xl font-black text-foreground mb-1" style={{ fontFamily: 'Outfit, sans-serif' }}>Color Trading</h3>
-                    <p className="text-xs text-muted-foreground mb-4">Win 2× Every 60 Seconds</p>
+                    <p className="text-xs text-muted-foreground mb-4">Win 2Ã Every 60 Seconds</p>
                     <div className="flex items-center text-primary text-[10px] font-black uppercase tracking-widest">
                         Trade Now <ChevronRight className="w-3 h-3 ml-1" />
                     </div>
@@ -143,7 +145,7 @@ const Index = () => {
                 <div className="bg-white rounded-3xl border border-dashed border-border p-12 text-center">
                   <Clock className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
                   <p className="text-muted-foreground font-bold">No Live Matches Right Now</p>
-                  <Link to="/ipl" className="text-primary text-sm font-black mt-2 inline-block">Check Upcoming Schedule →</Link>
+                  <Link to="/ipl" className="text-primary text-sm font-black mt-2 inline-block">Check Upcoming Schedule â</Link>
                 </div>
               )}
             </div>
@@ -160,7 +162,7 @@ const Index = () => {
                  </div>
                  <div className="bg-white p-4 rounded-2xl shadow-sm border border-border">
                     <div className="text-[10px] font-black text-muted-foreground uppercase mb-1">Total Payout</div>
-                    <div className="text-lg font-black text-emerald-600">₹44L+</div>
+                    <div className="text-lg font-black text-emerald-600">â¹44L+</div>
                  </div>
               </div>
 
@@ -198,7 +200,7 @@ const Index = () => {
               <div className="bg-black rounded-3xl p-6 text-white relative overflow-hidden">
                  <div className="relative z-10">
                     <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2">Refer & Earn</p>
-                    <h4 className="text-lg font-black mb-3 leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>GET ₹500 FOR <br/> EVERY FRIEND</h4>
+                    <h4 className="text-lg font-black mb-3 leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>GET â¹500 FOR <br/> EVERY FRIEND</h4>
                     <button className="bg-white text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Invite Now</button>
                  </div>
                  <Users className="absolute -bottom-4 -right-4 w-24 h-24 text-white/10" />
@@ -213,7 +215,7 @@ const Index = () => {
          <div className="flex flex-col items-center justify-center gap-2">
             <Logo size="sm" className="transition-all" />
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em]">
-               � 2026 PLATFORM � PLAY RESPONSIBLY
+               © 2026 PLATFORM  PLAY RESPONSIBLY
             </p>
          </div>
       </footer>

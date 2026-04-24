@@ -14,8 +14,8 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = "md" }) => {
   };
 
   return (
-    <span 
-      className={`font-black tracking-tighter uppercase ${sizeClasses[size]} ${className}`} 
+    <span
+      className={`font-black tracking-tighter uppercase ${sizeClasses[size]} ${className}`}
       style={{ fontFamily: 'Outfit, sans-serif' }}
     >
       <span className="text-foreground">9X</span>
