@@ -62,15 +62,8 @@ const HeroSection = () => {
           <div className="hidden md:flex justify-center">
             <div className="relative">
               <div className="absolute inset-0 bg-secondary/30 rounded-full blur-3xl scale-75" />
-              <div className="relative w-72 h-72 drop-shadow-2xl">
-                <img
-                  src={tossCoin}
-                  alt="Toss coin"
-                  className="w-full h-full object-contain"
-                  loading="lazy"
-                  width={512}
-                  height={512}
-                />
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white font-black text-8xl sm:text-9xl shadow-[0_0_50px_rgba(37,99,235,0.4)] border-8 border-white/10 select-none animate-float" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                9X
               </div>
             </div>
           </div>
