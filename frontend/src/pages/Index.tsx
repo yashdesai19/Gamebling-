@@ -112,7 +112,7 @@ const Index = () => {
                         <Palette className="w-6 h-6 text-purple-600" />
                     </div>
                     <h3 className="text-xl font-black text-foreground mb-1" style={{ fontFamily: 'Outfit, sans-serif' }}>Color Trading</h3>
-                    <p className="text-xs text-muted-foreground mb-4">Win 2Ã Every 60 Seconds</p>
+                    <p className="text-xs text-muted-foreground mb-4">Win 2× Every 60 Seconds</p>
                     <div className="flex items-center text-primary text-[10px] font-black uppercase tracking-widest">
                         Trade Now <ChevronRight className="w-3 h-3 ml-1" />
                     </div>
@@ -154,58 +154,9 @@ const Index = () => {
           {/* RIGHT SIDEBAR: Stats & Activity */}
           <aside className="hidden lg:block lg:col-span-3">
             <div className="sticky top-24 space-y-6">
-              {/* Stats Grid */}
-              <div className="grid grid-cols-2 gap-3">
-                 <div className="bg-white p-4 rounded-2xl shadow-sm border border-border">
-                    <div className="text-[10px] font-black text-muted-foreground uppercase mb-1">Active Players</div>
-                    <div className="text-lg font-black text-primary">14.2K</div>
-                 </div>
-                 <div className="bg-white p-4 rounded-2xl shadow-sm border border-border">
-                    <div className="text-[10px] font-black text-muted-foreground uppercase mb-1">Total Payout</div>
-                    <div className="text-lg font-black text-emerald-600">â¹44L+</div>
-                 </div>
-              </div>
-
-              {/* Trending Bets */}
-              <div className="bg-white rounded-3xl p-6 shadow-sm border border-border">
-                <div className="flex items-center gap-2 mb-6">
-                    <Activity className="w-4 h-4 text-primary" />
-                    <h3 className="text-xs font-black text-foreground uppercase tracking-widest">
-                        Live Betting Feed
-                    </h3>
-                </div>
-                <div className="space-y-5">
-                  {trendingBets.map((bet, i) => (
-                    <div key={i} className="flex flex-col gap-1 border-b border-muted/50 pb-4 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black text-foreground">{bet.user}</span>
-                        <span className="text-[10px] text-muted-foreground">{bet.time}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                            <Hash className="w-3 h-3 text-muted-foreground/50" />
-                            <span className="text-[11px] font-bold text-muted-foreground">{bet.game}</span>
-                        </div>
-                        <span className="text-xs font-black text-emerald-600">{bet.amount}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button className="w-full mt-6 py-3 bg-muted/30 rounded-xl text-[11px] font-black text-muted-foreground uppercase tracking-widest hover:bg-muted transition-colors">
-                    View Leaderboard
-                </button>
-              </div>
-
-              {/* Promo Card */}
-              <div className="bg-black rounded-3xl p-6 text-white relative overflow-hidden">
-                 <div className="relative z-10">
-                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2">Refer & Earn</p>
-                    <h4 className="text-lg font-black mb-3 leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>GET â¹500 FOR <br/> EVERY FRIEND</h4>
-                    <button className="bg-white text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Invite Now</button>
-                 </div>
-                 <Users className="absolute -bottom-4 -right-4 w-24 h-24 text-white/10" />
-              </div>
-            </div>
+              
+              
+                          </div>
           </aside>
 
         </div>
